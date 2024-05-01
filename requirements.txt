@@ -1,5 +1,6 @@
-mplfinance
 pandas
+numpy
 matplotlib
 yfinance
-numpy
+customtkinter
+tkcalendar

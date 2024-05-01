@@ -24,67 +24,66 @@ def plot_equivolume(ticker: str,
     :param hide_edge_line: Whether to hide the edge line on the chart (default is False).
     """
 
-    # 找到除去最新一个数据的最小值
+    # Find the minimum value excluding the latest data.
     volume_min_excluded = stock_data['Volume'][:-1].min()
     volume_max_excluded = stock_data['Volume'][:-1].max()
 
-    # 系数
+    # coefficient
     coefficient = 100 / (volume_max_excluded - volume_min_excluded)
     stock_data['Volume_coefficient'] = stock_data['Volume'] * coefficient
 
-    # x轴位置，每根柱子的位置设置为每根柱子宽度的一半，以使其靠左对齐
+    # x-axis position, set the position of each bar to half of the width of each bar to align them to the left.
     stock_data['x_location'] = stock_data['Volume_coefficient'].cumsum() - stock_data['Volume_coefficient'] / 2
 
-    # 计算颜色映射
+    # Compute color mapping.
     norm = mcolors.Normalize(vmin=volume_min_excluded, vmax=volume_max_excluded)
     colormap = plt.colormaps.get_cmap(color)
 
-    # 设置每个柱子的颜色
+    # Set the color for each bar.
     stock_data['color'] = [colormap(norm(vol)) for vol in stock_data['Volume']]
 
     fig, ax = plt.subplots()
 
-    # 设置bar的边线颜色，默认黑色，可以指定隐藏
+    # Set the border color of the bar, default is black, can be hidden
     if not hide_edge_line:
         bar_edge_color = 'black'
     else:
         bar_edge_color = None
 
-    # 画柱状图，x轴为系数化的成交量的累积和，高度为每条数据的High和Low之差
+    # Draw a bar chart, where the x-axis is the cumulative sum of standardized trading volume,
+    # and the height is the difference between the 'High' and 'Low'
     ax.bar(x=stock_data['x_location'], height=stock_data['High'] - stock_data['Low'],
            bottom=stock_data['Low'], width=stock_data['Volume_coefficient'],
            color=stock_data['color'], edgecolor=bar_edge_color)
 
-    # 添加收盘价的黑色横线
+    # add 'Close' price in every bar, can be hidden
     if not hide_close_line:
         plt.hlines(stock_data['Close'], xmin=stock_data['x_location'] - stock_data['Volume_coefficient'] / 2,
                    xmax=stock_data['x_location'] + stock_data['Volume_coefficient'] / 2, colors='black')
 
-    # 不显示x轴标签
-    ax.set_xticks([])
+    # set x-axis
+    if time_interval in ["1d", "1wk", "1mo", "3mo"]:
+        # show the label under the x-axis, show the first day of every month
+        month_starts = stock_data[stock_data.index.is_month_start]['x_location']
+        ax.set_xticks(month_starts)
+        ax.set_xticklabels([date.strftime('%Y-%m-%d') for date in stock_data.index[stock_data.index.is_month_start]], rotation=45)
+    else:
+        # Display 5 time labels evenly on the x-axis for reference.
+        num_ticks = 5
+        num_data_points = len(stock_data)
+        interval_size = num_data_points // num_ticks
 
-    # 添加标题和标签
+        # Selecting data points at even intervals
+        selected_data_points = stock_data.iloc[::interval_size]['x_location']
+
+        ax.set_xticks(selected_data_points)
+        ax.set_xticklabels([date.strftime('%Y-%m-%d %H:%M') for date in stock_data.index[::interval_size]], rotation=45)
+
+    # add the ticker name as the title in the center, and add the time interval in the right
     ax.set_ylabel('Price')
-    ax.set_title(f'{ticker} time interval: {time_interval}')
+    ax.set_title(f'{ticker}', fontsize=16)
+    ax.set_title(f'Time Interval: {time_interval}', fontsize=12, loc='right')
 
-    # 显示图形
+    # show the equivolume chart
     plt.tight_layout()
     plt.show()
-
-
-if __name__ == "__main__":
-    symbol = "QQQ"
-    start = "2024-04-24"
-    end = "2024-05-01"
-    time_inter = '5m'
-    iro = "Reds"
-    hide_close = True
-    hide_bar_edge = False
-
-    plot_equivolume(ticker=symbol,
-                    start_date=start,
-                    end_date=end,
-                    color=iro,
-                    time_interval=time_inter,
-                    hide_close_line=hide_close,
-                    hide_edge_line=hide_bar_edge)
