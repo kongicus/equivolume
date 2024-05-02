@@ -49,6 +49,7 @@ class EquiVolumePlotter:
                                      interval=self.time_interval)
             return stock_data
         elif data_src == "tdx":
+            self.time_interval = "1d"
             stock_data = get_tdx_daily_data(ticker=self.ticker, start=self.start_date, end=self.end_date,
                                             interval=self.time_interval, tdx_dir=self.tdx_dir)
             return stock_data
