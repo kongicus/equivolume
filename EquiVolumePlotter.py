@@ -47,8 +47,6 @@ class EquiVolumePlotter:
                                      end=self.end_date,
                                      interval=self.time_interval)
             return stock_data
-        elif data_src == "moomoo":
-            pass
         elif data_src == "tdx":
             stock_data = get_tdx_daily_data(ticker=self.ticker, start=self.start_date, end=self.end_date,
                                             interval=self.time_interval, tdx_dir=self.tdx_dir)
@@ -65,7 +63,7 @@ class EquiVolumePlotter:
         self.stock_data = self.impute_data()
 
         # Figure instance
-        fig = plt.figure()
+        fig = plt.figure(figsize=(20, 12))
 
         # ax instance, the subplot in the figure that located in nrows=1 ncols=1, and index=1
         ax = fig.add_subplot(1, 1, 1)
@@ -87,10 +85,13 @@ class EquiVolumePlotter:
         # set x-axis
         set_x_axis_label(ax, self.stock_data, self.time_interval)
 
+        # Adjust the font size of the y-axis tick labels
+        ax.tick_params(axis='y', labelsize=15)
+
         # add the ticker name as the title in the center, and add the time interval in the right
-        ax.set_ylabel('Price')
-        ax.set_title(f'{self.ticker}', fontsize=16)
-        ax.set_title(f'Time Interval: {self.time_interval}', fontsize=12, loc='right')
+        ax.set_ylabel('Price', fontsize=15)
+        ax.set_title(f'{self.ticker}', fontsize=20)
+        ax.set_title(f'Time Interval: {self.time_interval}', fontsize=15, loc='right')
 
         # show the equivolume chart
         plt.tight_layout()

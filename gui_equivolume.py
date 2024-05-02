@@ -117,7 +117,7 @@ class App(customtkinter.CTk):
         # choose data_source
         self.data_source_var = customtkinter.StringVar(value="Yahoo")
         self.data_source = customtkinter.CTkComboBox(self,
-                                                     values=['Yahoo', 'moomoo', 'tdx'],
+                                                     values=['Yahoo', 'tdx'],
                                                      width=90,
                                                      variable=self.data_source_var)
         self.data_source.grid(row=3,

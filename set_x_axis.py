@@ -7,7 +7,8 @@ def set_x_axis_label(ax, stock_data, time_interval):
         # show the label under the x-axis, show the first day of every month
         month_starts = stock_data[stock_data.index.is_month_start]['x_location']
         ax.set_xticks(month_starts)
-        ax.set_xticklabels([date.strftime('%Y-%m-%d') for date in stock_data.index[stock_data.index.is_month_start]], rotation=45)
+        ax.set_xticklabels([date.strftime('%Y-%m-%d') for date in stock_data.index[stock_data.index.is_month_start]],
+                           rotation=45)
     else:
         # Display 5 time labels evenly on the x-axis for reference.
         num_ticks = 5
@@ -18,4 +19,5 @@ def set_x_axis_label(ax, stock_data, time_interval):
         selected_data_points = stock_data.iloc[::interval_size]['x_location']
 
         ax.set_xticks(selected_data_points)
-        ax.set_xticklabels([date.strftime('%Y-%m-%d %H:%M') for date in stock_data.index[::interval_size]], rotation=45)
+        ax.set_xticklabels([date.strftime('%Y-%m-%d\n%H:%M') for date in stock_data.index[::interval_size]],
+                           rotation=45, fontsize=13)
