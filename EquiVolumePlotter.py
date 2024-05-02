@@ -7,6 +7,8 @@ from hide_edge_line import set_edge_line
 from hide_close_line import set_close_line
 from set_x_axis import set_x_axis_label
 from add_x_axis_location import add_x_axis_location
+from get_data_tdx import get_tdx_daily_data
+
 
 class EquiVolumePlotter:
     """
@@ -24,7 +26,9 @@ class EquiVolumePlotter:
     :param hide_edge_line: Whether to hide the edge line on the chart (default is False).
 
     """
-    def __init__(self, ticker: str, start_date: str, end_date: str, time_interval: str = '1d', color: str = 'Reds', hide_close_line: bool = False, hide_edge_line: bool = False):
+
+    def __init__(self, ticker: str, start_date: str, end_date: str, time_interval: str, color: str,
+                 hide_close_line: bool, hide_edge_line: bool, data_src: str, tdx_dir: str):
         self.ticker = ticker
         self.start_date = start_date
         self.end_date = end_date
@@ -32,19 +36,28 @@ class EquiVolumePlotter:
         self.color = color
         self.hide_close_line = hide_close_line
         self.hide_edge_line = hide_edge_line
-        self.stock_data = self.get_data()
+        self.tdx_dir = tdx_dir
+        self.stock_data = self.get_data(data_src)
         self.volume_min_excluded, self.volume_max_excluded = get_min_max_of_volume(self.stock_data)
 
-    def get_data(self):
-        stock_data = yf.download(tickers=self.ticker,
-                                 start=self.start_date,
-                                 end=self.end_date,
-                                 interval=self.time_interval)
-        return stock_data
+    def get_data(self, data_src):
+        if data_src == "Yahoo":
+            stock_data = yf.download(tickers=self.ticker,
+                                     start=self.start_date,
+                                     end=self.end_date,
+                                     interval=self.time_interval)
+            return stock_data
+        elif data_src == "moomoo":
+            pass
+        elif data_src == "tdx":
+            stock_data = get_tdx_daily_data(ticker=self.ticker, start=self.start_date, end=self.end_date,
+                                            interval=self.time_interval, tdx_dir=self.tdx_dir)
+            return stock_data
 
     def impute_data(self):
         self.stock_data = add_col_coefficient(self.stock_data, self.volume_min_excluded, self.volume_max_excluded)
-        self.stock_data = add_col_bar_color(self.stock_data, self.color, self.volume_min_excluded, self.volume_max_excluded)
+        self.stock_data = add_col_bar_color(self.stock_data, self.color, self.volume_min_excluded,
+                                            self.volume_max_excluded)
         self.stock_data = add_x_axis_location(self.stock_data)
         return self.stock_data
 
