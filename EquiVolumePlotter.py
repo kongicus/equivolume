@@ -39,6 +39,7 @@ class EquiVolumePlotter:
         self.tdx_dir = tdx_dir
         self.stock_data = self.get_data(data_src)
         self.volume_min_excluded, self.volume_max_excluded = get_min_max_of_volume(self.stock_data)
+        self.stock_data = self.impute_data()
 
     def get_data(self, data_src):
         if data_src == "Yahoo":
@@ -60,8 +61,6 @@ class EquiVolumePlotter:
         return self.stock_data
 
     def plot_equivolume_chart(self):
-        self.stock_data = self.impute_data()
-
         # Figure instance
         fig = plt.figure(figsize=(20, 12))
 
