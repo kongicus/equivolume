@@ -8,15 +8,15 @@ class App(customtkinter.CTk):
         super().__init__()
 
         self.title("EquiVolume")
-        self.geometry("900x400")
+        self.geometry("900x300")
 
         # Set the weight of each column to 1 so that they are evenly distributed horizontally.
-        for i in range(6):
+        for i in range(5):
             self.grid_columnconfigure(i, weight=1)
 
         # input stock name
         self.ticker_name = customtkinter.CTkTextbox(self,
-                                                    width=80,
+                                                    width=40,
                                                     height=10)
         self.ticker_name.insert(index="0.0",
                                 text="AAPL")
@@ -32,8 +32,8 @@ class App(customtkinter.CTk):
                                                        font=("Arial", 16))
         self.start_date_label.grid(row=1,
                                    column=0,
-                                   padx=20,
-                                   pady=(0, 20),
+                                   padx=(20, 0),
+                                   pady=(10, 10),
                                    sticky="w")
         self.start_date_entry = DateEntry(self,
                                           width=10,
@@ -41,8 +41,8 @@ class App(customtkinter.CTk):
                                           font=("Arial", 16))
         self.start_date_entry.grid(row=1,
                                    column=1,
-                                   padx=20,
-                                   pady=(0, 20),
+                                   padx=(0, 20),
+                                   pady=(10, 10),
                                    sticky="ew")
 
         # Date picker for end date
@@ -51,8 +51,8 @@ class App(customtkinter.CTk):
                                                      font=("Arial", 16))
         self.end_date_label.grid(row=1,
                                  column=2,
-                                 padx=20,
-                                 pady=(0, 20),
+                                 padx=(20, 0),
+                                 pady=(10, 10),
                                  sticky="w")
         self.end_date_entry = DateEntry(self,
                                         width=10,
@@ -60,8 +60,8 @@ class App(customtkinter.CTk):
                                         font=("Arial", 16))
         self.end_date_entry.grid(row=1,
                                  column=3,
-                                 padx=20,
-                                 pady=(0, 20),
+                                 padx=(0, 20),
+                                 pady=(10, 10),
                                  sticky="ew")
 
         # choose time interval
@@ -97,10 +97,10 @@ class App(customtkinter.CTk):
         self.hide_close_line = customtkinter.CTkCheckBox(self,
                                                          text="hide close line",
                                                          variable=self.hide_close_line_var)
-        self.hide_close_line.grid(row=0,
-                                  column=3,
+        self.hide_close_line.grid(row=2,
+                                  column=0,
                                   padx=20,
-                                  pady=(20, 20),
+                                  pady=(10, 20),
                                   sticky="ew")
 
         # hide_edge_line
@@ -108,18 +108,18 @@ class App(customtkinter.CTk):
         self.hide_edge_line = customtkinter.CTkCheckBox(self,
                                                         text="hide edge line",
                                                         variable=self.hide_edge_line_var)
-        self.hide_edge_line.grid(row=0,
-                                 column=4,
+        self.hide_edge_line.grid(row=2,
+                                 column=1,
                                  padx=20,
-                                 pady=(20, 20),
+                                 pady=(10, 20),
                                  sticky="ew")
-
         # plot button
         self.button = customtkinter.CTkButton(self,
                                               text="PLOT",
                                               command=self.plot_button)
-        self.button.grid(row=0,
-                         column=5,
+        self.button.grid(row=4,
+                         column=1,
+                         columnspan=2,
                          padx=20,
                          pady=(20, 20),
                          sticky="ew")
