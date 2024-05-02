@@ -1,6 +1,12 @@
 import yfinance as yf
-from plot_equivolume import plot_equivolume
+import matplotlib.pyplot as plt
 
+from add_col_coefficient import add_col_coefficient, get_min_max_of_volume
+from add_bar_color import add_col_bar_color
+from hide_edge_line import set_edge_line
+from hide_close_line import set_close_line
+from set_x_axis import set_x_axis_label
+from add_x_axis_location import add_x_axis_location
 
 class EquiVolumePlotter:
     """
@@ -26,6 +32,8 @@ class EquiVolumePlotter:
         self.color = color
         self.hide_close_line = hide_close_line
         self.hide_edge_line = hide_edge_line
+        self.stock_data = self.get_data()
+        self.volume_min_excluded, self.volume_max_excluded = get_min_max_of_volume(self.stock_data)
 
     def get_data(self):
         stock_data = yf.download(tickers=self.ticker,
@@ -34,11 +42,43 @@ class EquiVolumePlotter:
                                  interval=self.time_interval)
         return stock_data
 
-    def plot(self):
-        stock_data = self.get_data()
-        plot_equivolume(self.ticker, stock_data, self.time_interval, self.color, self.hide_close_line, self.hide_edge_line)
+    def impute_data(self):
+        self.stock_data = add_col_coefficient(self.stock_data, self.volume_min_excluded, self.volume_max_excluded)
+        self.stock_data = add_col_bar_color(self.stock_data, self.color, self.volume_min_excluded, self.volume_max_excluded)
+        self.stock_data = add_x_axis_location(self.stock_data)
+        return self.stock_data
 
+    def plot_equivolume_chart(self):
+        self.stock_data = self.impute_data()
 
-if __name__ == "__main__":
-    equi_volume_plotter = EquiVolumePlotter(ticker="AAPL", start_date="2024-01-01", end_date="2024-05-01")
-    equi_volume_plotter.plot()
+        # Figure instance
+        fig = plt.figure()
+
+        # ax instance, the subplot in the figure that located in nrows=1 ncols=1, and index=1
+        ax = fig.add_subplot(1, 1, 1)
+
+        # Set the border color of the bar, default is black, can be hidden
+        bar_edge_color = set_edge_line(self.hide_edge_line)
+
+        # Draw a bar chart, where the x-axis is the cumulative sum of standardized trading volume,
+        # and the height is the difference between the 'High' and 'Low'
+        ax.bar(x=self.stock_data['x_location'],
+               height=self.stock_data['High'] - self.stock_data['Low'],
+               bottom=self.stock_data['Low'],
+               width=self.stock_data['Volume_coefficient'],
+               color=self.stock_data['color'],
+               edgecolor=bar_edge_color)
+
+        set_close_line(self.hide_close_line, self.stock_data)
+
+        # set x-axis
+        set_x_axis_label(ax, self.stock_data, self.time_interval)
+
+        # add the ticker name as the title in the center, and add the time interval in the right
+        ax.set_ylabel('Price')
+        ax.set_title(f'{self.ticker}', fontsize=16)
+        ax.set_title(f'Time Interval: {self.time_interval}', fontsize=12, loc='right')
+
+        # show the equivolume chart
+        plt.tight_layout()
+        plt.show()

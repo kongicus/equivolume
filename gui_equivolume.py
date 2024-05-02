@@ -8,7 +8,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         self.title("EquiVolume")
-        self.geometry("900x600")
+        self.geometry("900x400")
 
         # Set the weight of each column to 1 so that they are evenly distributed horizontally.
         for i in range(6):
@@ -130,9 +130,9 @@ class App(customtkinter.CTk):
                                                     end_date=self.end_date_entry.get(),
                                                     time_interval=self.time_interval_var.get(),
                                                     color=self.bar_color_var.get(),
-                                                    hide_close_line=self.hide_close_line_var.get(),  # 获取复选框的状态
-                                                    hide_edge_line=self.hide_edge_line_var.get())  # 获取复选框的状态
-        equi_volume_plotter.plot()
+                                                    hide_close_line=self.hide_close_line_var.get(),
+                                                    hide_edge_line=self.hide_edge_line_var.get())
+        equi_volume_plotter.plot_equivolume_chart()
 
 
 app = App()
