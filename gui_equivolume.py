@@ -1,6 +1,5 @@
 import customtkinter
 from tkcalendar import DateEntry
-from tkinter import filedialog
 
 import EquiVolumePlotter as evp
 

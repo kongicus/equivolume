@@ -1,6 +1,3 @@
-import matplotlib.pyplot as plt
-
-
 def set_x_axis_label(ax, stock_data, time_interval):
     # set x-axis
     if time_interval in ["1d", "1wk", "1mo", "3mo"]:
