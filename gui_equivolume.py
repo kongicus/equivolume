@@ -1,7 +1,7 @@
 import customtkinter
 from tkcalendar import DateEntry
 
-import EquiVolumePlotter as evp
+from src import EquiVolumePlotter as evp
 
 
 class App(customtkinter.CTk):
