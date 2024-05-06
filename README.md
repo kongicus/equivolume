@@ -1,6 +1,6 @@
 The characteristic of Equivolume chart is that the wider and darker the candle, the larger the trading volume,
 facilitating the analysis of supply and demand relationships from the relationship between volume and price.<br><br>
-
+You can directly download `gui_equivolume.exe` for use.
 1. Run
 
 ```commandline
